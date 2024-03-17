@@ -44,3 +44,21 @@ func main() {
 	}
 	fmt.Println("Migrations apply")
 }
+
+func MigrUp(sPath, mPath string) error {
+	m, err := migrate.New(
+		mPath,
+		sPath,
+	)
+	if err != nil {
+		return err
+	}
+	if err := m.Up(); err != nil {
+		if errors.Is(err, migrate.ErrNoChange) {
+			fmt.Println("no migrations to apply")
+			return nil
+		}
+		return err
+	}
+	return nil
+}

@@ -3,7 +3,6 @@ module github.com/Dorrrke/GophKeeper-client
 go 1.21.5
 
 require (
-	github.com/Dorrrke/GophKeeper v0.0.0-20240314082457-e2a7c7dd8b4c
 	github.com/Dorrrke/goph-keeper-proto v0.0.4
 	github.com/fernet/fernet-go v0.0.0-20240119011108-303da6aec611
 	github.com/golang-migrate/migrate/v4 v4.17.0
@@ -23,6 +22,7 @@ require (
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
+	github.com/stretchr/objx v0.5.2 // indirect
 	go.uber.org/atomic v1.7.0 // indirect
 	golang.org/x/net v0.21.0 // indirect
 	golang.org/x/sys v0.18.0 // indirect

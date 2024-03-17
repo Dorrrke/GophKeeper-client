@@ -1,8 +1,7 @@
 package main
 
 import (
-	"github.com/Dorrrke/GophKeeper-client/cmd"
-	_ "github.com/mattn/go-sqlite3"
+	cmd "github.com/Dorrrke/GophKeeper-client/internal/commands"
 )
 
 var (

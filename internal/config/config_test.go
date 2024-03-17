@@ -51,7 +51,7 @@ func TestReadConfit(t *testing.T) {
 			want: want{
 				cfg: Config{
 					ServerAddr: "localhost:8080",
-					DBPath:     "internal/storage/gophkeeper.db",
+					DBPath:     "gophkeeper.db",
 				},
 			},
 		},

@@ -7,7 +7,10 @@ import (
 
 	"github.com/Dorrrke/GophKeeper-client/internal/client"
 	"github.com/Dorrrke/GophKeeper-client/internal/domain/models"
+	_ "github.com/golang-migrate/migrate/v4/database/sqlite3"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/golang/mock/gomock"
+	_ "github.com/mattn/go-sqlite3"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -57,9 +60,14 @@ func TestSaveCard(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
-			m := NewMockStorage(ctrl)
-			m.EXPECT().SaveCard(context.Background(), tc.card, tc.uID).Return(tc.want.uID, tc.want.err)
-			service := New(&client.KeeperClient{}, m)
+			m1 := NewMockCardStorage(ctrl)
+			m2 := NewMockAuthStorage(ctrl)
+			m3 := NewMockBinStorage(ctrl)
+			m4 := NewMockStorage(ctrl)
+			m5 := NewMockTextStorage(ctrl)
+			m6 := NewMockUserStorage(ctrl)
+			m1.EXPECT().SaveCard(context.Background(), tc.card, tc.uID).Return(tc.want.uID, tc.want.err)
+			service := New(&client.KeeperClient{}, m4, m6, m1, m5, m3, m2)
 			res, _ := service.SaveCard(tc.card, tc.uID)
 			assert.Equal(t, tc.want.uID, res)
 		})
@@ -110,9 +118,14 @@ func TestSaveLogin(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
-			m := NewMockStorage(ctrl)
-			m.EXPECT().SaveLogin(context.Background(), tc.login, tc.uID).Return(tc.want.uID, tc.want.err)
-			service := New(&client.KeeperClient{}, m)
+			m1 := NewMockCardStorage(ctrl)
+			m2 := NewMockAuthStorage(ctrl)
+			m3 := NewMockBinStorage(ctrl)
+			m4 := NewMockStorage(ctrl)
+			m5 := NewMockTextStorage(ctrl)
+			m6 := NewMockUserStorage(ctrl)
+			m2.EXPECT().SaveLogin(context.Background(), tc.login, tc.uID).Return(tc.want.uID, tc.want.err)
+			service := New(&client.KeeperClient{}, m4, m6, m1, m5, m3, m2)
 			res, _ := service.SaveLogin(tc.login, tc.uID)
 			assert.Equal(t, tc.want.uID, res)
 		})
@@ -161,9 +174,14 @@ func TestSaveTextData(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
-			m := NewMockStorage(ctrl)
-			m.EXPECT().SaveText(context.Background(), tc.text, tc.uID).Return(tc.want.uID, tc.want.err)
-			service := New(&client.KeeperClient{}, m)
+			m1 := NewMockCardStorage(ctrl)
+			m2 := NewMockAuthStorage(ctrl)
+			m3 := NewMockBinStorage(ctrl)
+			m4 := NewMockStorage(ctrl)
+			m5 := NewMockTextStorage(ctrl)
+			m6 := NewMockUserStorage(ctrl)
+			m5.EXPECT().SaveText(context.Background(), tc.text, tc.uID).Return(tc.want.uID, tc.want.err)
+			service := New(&client.KeeperClient{}, m4, m6, m1, m5, m3, m2)
 			res, _ := service.SaveTextData(tc.text, tc.uID)
 			assert.Equal(t, tc.want.uID, res)
 		})
@@ -212,9 +230,14 @@ func TestSaveBinaryData(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
-			m := NewMockStorage(ctrl)
-			m.EXPECT().SaveBin(context.Background(), tc.text, tc.uID).Return(tc.want.uID, tc.want.err)
-			service := New(&client.KeeperClient{}, m)
+			m1 := NewMockCardStorage(ctrl)
+			m2 := NewMockAuthStorage(ctrl)
+			m3 := NewMockBinStorage(ctrl)
+			m4 := NewMockStorage(ctrl)
+			m5 := NewMockTextStorage(ctrl)
+			m6 := NewMockUserStorage(ctrl)
+			m3.EXPECT().SaveBin(context.Background(), tc.text, tc.uID).Return(tc.want.uID, tc.want.err)
+			service := New(&client.KeeperClient{}, m4, m6, m1, m5, m3, m2)
 			res, _ := service.SaveBinaryData(tc.text, tc.uID)
 			assert.Equal(t, tc.want.uID, res)
 		})
@@ -267,9 +290,14 @@ func TestGetBins(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
-			m := NewMockStorage(ctrl)
-			m.EXPECT().GetAllBin(context.Background(), tc.uID).Return(tc.want.bins, tc.want.err)
-			service := New(&client.KeeperClient{}, m)
+			m1 := NewMockCardStorage(ctrl)
+			m2 := NewMockAuthStorage(ctrl)
+			m3 := NewMockBinStorage(ctrl)
+			m4 := NewMockStorage(ctrl)
+			m5 := NewMockTextStorage(ctrl)
+			m6 := NewMockUserStorage(ctrl)
+			m3.EXPECT().GetAllBin(context.Background(), tc.uID).Return(tc.want.bins, tc.want.err)
+			service := New(&client.KeeperClient{}, m4, m6, m1, m5, m3, m2)
 			res, _ := service.GetBins(tc.uID)
 			assert.Equal(t, tc.want.bins, res)
 		})
@@ -328,9 +356,14 @@ func TestGetCards(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
-			m := NewMockStorage(ctrl)
-			m.EXPECT().GetAllCards(context.Background(), tc.uID).Return(tc.want.cards, tc.want.err)
-			service := New(&client.KeeperClient{}, m)
+			m1 := NewMockCardStorage(ctrl)
+			m2 := NewMockAuthStorage(ctrl)
+			m3 := NewMockBinStorage(ctrl)
+			m4 := NewMockStorage(ctrl)
+			m5 := NewMockTextStorage(ctrl)
+			m6 := NewMockUserStorage(ctrl)
+			m1.EXPECT().GetAllCards(context.Background(), tc.uID).Return(tc.want.cards, tc.want.err)
+			service := New(&client.KeeperClient{}, m4, m6, m1, m5, m3, m2)
 			res, _ := service.GetCards(tc.uID)
 			assert.Equal(t, tc.want.cards, res)
 		})
@@ -386,9 +419,14 @@ func TestGetLogins(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
-			m := NewMockStorage(ctrl)
-			m.EXPECT().GetAllLogins(context.Background(), tc.uID).Return(tc.want.logins, tc.want.err)
-			service := New(&client.KeeperClient{}, m)
+			m1 := NewMockCardStorage(ctrl)
+			m2 := NewMockAuthStorage(ctrl)
+			m3 := NewMockBinStorage(ctrl)
+			m4 := NewMockStorage(ctrl)
+			m5 := NewMockTextStorage(ctrl)
+			m6 := NewMockUserStorage(ctrl)
+			m2.EXPECT().GetAllLogins(context.Background(), tc.uID).Return(tc.want.logins, tc.want.err)
+			service := New(&client.KeeperClient{}, m4, m6, m1, m5, m3, m2)
 			res, _ := service.GetLogins(tc.uID)
 			assert.Equal(t, tc.want.logins, res)
 		})
@@ -441,9 +479,14 @@ func TestGetTextData(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
-			m := NewMockStorage(ctrl)
-			m.EXPECT().GetAllTextData(context.Background(), tc.uID).Return(tc.want.text, tc.want.err)
-			service := New(&client.KeeperClient{}, m)
+			m1 := NewMockCardStorage(ctrl)
+			m2 := NewMockAuthStorage(ctrl)
+			m3 := NewMockBinStorage(ctrl)
+			m4 := NewMockStorage(ctrl)
+			m5 := NewMockTextStorage(ctrl)
+			m6 := NewMockUserStorage(ctrl)
+			m5.EXPECT().GetAllTextData(context.Background(), tc.uID).Return(tc.want.text, tc.want.err)
+			service := New(&client.KeeperClient{}, m4, m6, m1, m5, m3, m2)
 			res, _ := service.GetTextData(tc.uID)
 			assert.Equal(t, tc.want.text, res)
 		})
@@ -489,9 +532,14 @@ func TestGetCardByName(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
-			m := NewMockStorage(ctrl)
-			m.EXPECT().GetCardByName(context.Background(), tc.cName, tc.uID).Return(tc.want.data, tc.want.err)
-			service := New(&client.KeeperClient{}, m)
+			m1 := NewMockCardStorage(ctrl)
+			m2 := NewMockAuthStorage(ctrl)
+			m3 := NewMockBinStorage(ctrl)
+			m4 := NewMockStorage(ctrl)
+			m5 := NewMockTextStorage(ctrl)
+			m6 := NewMockUserStorage(ctrl)
+			m1.EXPECT().GetCardByName(context.Background(), tc.cName, tc.uID).Return(tc.want.data, tc.want.err)
+			service := New(&client.KeeperClient{}, m4, m6, m1, m5, m3, m2)
 			res, _ := service.GetCardByName(tc.cName, tc.uID)
 			assert.Equal(t, tc.want.data, res)
 		})
@@ -536,9 +584,14 @@ func GetLoginByName(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
-			m := NewMockStorage(ctrl)
-			m.EXPECT().GetLoginByName(context.Background(), tc.cName, tc.uID).Return(tc.want.data, tc.want.err)
-			service := New(&client.KeeperClient{}, m)
+			m1 := NewMockCardStorage(ctrl)
+			m2 := NewMockAuthStorage(ctrl)
+			m3 := NewMockBinStorage(ctrl)
+			m4 := NewMockStorage(ctrl)
+			m5 := NewMockTextStorage(ctrl)
+			m6 := NewMockUserStorage(ctrl)
+			m2.EXPECT().GetLoginByName(context.Background(), tc.cName, tc.uID).Return(tc.want.data, tc.want.err)
+			service := New(&client.KeeperClient{}, m4, m6, m1, m5, m3, m2)
 			res, _ := service.GetLoginByName(tc.cName, tc.uID)
 			assert.Equal(t, tc.want.data, res)
 		})
@@ -582,9 +635,14 @@ func TesGetTextDataByName(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
-			m := NewMockStorage(ctrl)
-			m.EXPECT().GetTextDataByName(context.Background(), tc.cName, tc.uID).Return(tc.want.data, tc.want.err)
-			service := New(&client.KeeperClient{}, m)
+			m1 := NewMockCardStorage(ctrl)
+			m2 := NewMockAuthStorage(ctrl)
+			m3 := NewMockBinStorage(ctrl)
+			m4 := NewMockStorage(ctrl)
+			m5 := NewMockTextStorage(ctrl)
+			m6 := NewMockUserStorage(ctrl)
+			m5.EXPECT().GetTextDataByName(context.Background(), tc.cName, tc.uID).Return(tc.want.data, tc.want.err)
+			service := New(&client.KeeperClient{}, m4, m6, m1, m5, m3, m2)
 			res, _ := service.GetTextDataByName(tc.cName, tc.uID)
 			assert.Equal(t, tc.want.data, res)
 		})
@@ -628,11 +686,132 @@ func TestGetBinByName(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
-			m := NewMockStorage(ctrl)
-			m.EXPECT().GetBinByName(context.Background(), tc.cName, tc.uID).Return(tc.want.data, tc.want.err)
-			service := New(&client.KeeperClient{}, m)
+			m1 := NewMockCardStorage(ctrl)
+			m2 := NewMockAuthStorage(ctrl)
+			m3 := NewMockBinStorage(ctrl)
+			m4 := NewMockStorage(ctrl)
+			m5 := NewMockTextStorage(ctrl)
+			m6 := NewMockUserStorage(ctrl)
+			m3.EXPECT().GetBinByName(context.Background(), tc.cName, tc.uID).Return(tc.want.data, tc.want.err)
+			service := New(&client.KeeperClient{}, m4, m6, m1, m5, m3, m2)
 			res, _ := service.GetBinByName(tc.cName, tc.uID)
 			assert.Equal(t, tc.want.data, res)
 		})
 	}
 }
+
+// func TestSyncBD(t *testing.T) {
+// 	type want struct {
+// 		data models.SyncModel
+// 	}
+// 	type test struct {
+// 		name  string
+// 		card  models.CardModel
+// 		sCard models.SyncCardModel
+// 		uID   int64
+// 		want  want
+// 	}
+// 	tests := []test{
+// 		{
+// 			name: "TestSyncBD 1",
+// 			card: models.CardModel{
+// 				Name:    "Test card",
+// 				Number:  "8899223344556677",
+// 				Date:    "08/29",
+// 				CVVCode: 654,
+// 			},
+// 			sCard: models.SyncCardModel{
+// 				UserID:  1,
+// 				Name:    "Test card",
+// 				Number:  "8899223344556677",
+// 				Date:    "08/29",
+// 				CVVCode: 654,
+// 				Deleted: false,
+// 				Updated: time.Now().Format(time.RFC3339),
+// 			},
+// 			uID: 1,
+// 			want: want{
+// 				data: models.SyncModel{
+// 					Cards: []models.SyncCardModel{},
+// 					Texts: []models.SyncTextDataModel{},
+// 					Bins:  []models.SyncBinaryDataModel{},
+// 					Auth:  []models.SyncLoginModel{},
+// 				},
+// 			},
+// 		},
+// 	}
+
+// 	for _, tc := range tests {
+// 		t.Run(tc.name, func(t *testing.T) {
+// 			err := MigrDown()
+// 			assert.NoError(t, err)
+// 			sModel := models.SyncModel{
+// 				Cards: []models.SyncCardModel{},
+// 				Texts: []models.SyncTextDataModel{},
+// 				Bins:  []models.SyncBinaryDataModel{},
+// 				Auth:  []models.SyncLoginModel{},
+// 			}
+// 			sModel.Cards = append(sModel.Cards, tc.sCard)
+// 			ctrl := gomock.NewController(t)
+// 			defer ctrl.Finish()
+// 			err = MigrUp()
+// 			assert.NoError(t, err)
+// 			storage, err := storage.New("testdb.db")
+// 			assert.NoError(t, err)
+// 			m := NewMockClient(ctrl)
+// 			m.EXPECT().Sync(context.Background(), sModel, tc.uID).Return(models.SyncModel{
+// 				Cards: []models.SyncCardModel{},
+// 				Texts: []models.SyncTextDataModel{},
+// 				Bins:  []models.SyncBinaryDataModel{},
+// 				Auth:  []models.SyncLoginModel{},
+// 			}, nil)
+// 			service := New(m, storage, storage, storage, storage, storage, storage)
+// 			_, err = service.SaveCard(tc.card, tc.uID)
+// 			assert.NoError(t, err)
+// 			err = service.SyncBD(context.Background(), tc.uID)
+// 			assert.NoError(t, err)
+// 		})
+// 	}
+// }
+
+// func MigrUp() error {
+// 	sPath := "testdb.db"
+// 	mPath := "migrations/"
+// 	migratePath := "file://" + mPath
+// 	storPath := fmt.Sprintf("sqlite3://%s", sPath)
+// 	m, err := migrate.New(
+// 		migratePath,
+// 		storPath,
+// 	)
+// 	if err != nil {
+// 		return err
+// 	}
+// 	if err := m.Up(); err != nil {
+// 		if errors.Is(err, migrate.ErrNoChange) {
+// 			return nil
+// 		}
+// 		return err
+// 	}
+// 	return nil
+// }
+
+// func MigrDown() error {
+// 	sPath := "testdb.db"
+// 	mPath := "migrations/"
+// 	migratePath := "file://" + mPath
+// 	storPath := fmt.Sprintf("sqlite3://%s", sPath)
+// 	m, err := migrate.New(
+// 		migratePath,
+// 		storPath,
+// 	)
+// 	if err != nil {
+// 		return err
+// 	}
+// 	if err := m.Down(); err != nil {
+// 		if errors.Is(err, migrate.ErrNoChange) {
+// 			return nil
+// 		}
+// 		return err
+// 	}
+// 	return nil
+// }
